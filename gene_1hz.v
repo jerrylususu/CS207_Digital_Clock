@@ -1,24 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 12/19/2018 12:03:12 PM
-// Design Name: 
-// Module Name: gene_1hz
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
+//generate a signal of 1hz form the default clock
 
 module gene_1hz(clk_100mhz,rst_100mhz,out_1hz);
 input clk_100mhz,rst_100mhz;
