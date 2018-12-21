@@ -3,7 +3,7 @@
 
 module gene_1hz(clk_100mhz,rst_100mhz,out_1hz);
 input clk_100mhz,rst_100mhz;
-reg [20:0] count_reg = 0;
+reg [25:0] count_reg = 0;
 output reg out_1hz = 0;
 
 always @(posedge clk_100mhz or posedge rst_100mhz) begin
