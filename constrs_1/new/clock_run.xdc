@@ -1,0 +1,51 @@
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[7]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_en[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[7]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg_out[0]}]
+
+set_property PACKAGE_PIN C19 [get_ports {seg_en[0]}]
+set_property PACKAGE_PIN E19 [get_ports {seg_en[1]}]
+set_property PACKAGE_PIN D19 [get_ports {seg_en[2]}]
+set_property PACKAGE_PIN F18 [get_ports {seg_en[3]}]
+set_property PACKAGE_PIN E18 [get_ports {seg_en[4]}]
+set_property PACKAGE_PIN B20 [get_ports {seg_en[5]}]
+set_property PACKAGE_PIN A20 [get_ports {seg_en[6]}]
+set_property PACKAGE_PIN A18 [get_ports {seg_en[7]}]
+
+
+set_property PACKAGE_PIN F15 [get_ports {seg_out[0]}]
+set_property PACKAGE_PIN F13 [get_ports {seg_out[1]}]
+set_property PACKAGE_PIN F14 [get_ports {seg_out[2]}]
+set_property PACKAGE_PIN F16 [get_ports {seg_out[3]}]
+
+set_property PACKAGE_PIN E17 [get_ports {seg_out[4]}]
+set_property PACKAGE_PIN C14 [get_ports {seg_out[5]}]
+set_property PACKAGE_PIN C15 [get_ports {seg_out[6]}]
+set_property PACKAGE_PIN E13 [get_ports {seg_out[7]}]
+
+
+
+set_property PACKAGE_PIN K17 [get_ports onehz]
+set_property IOSTANDARD LVCMOS33 [get_ports onehz]
+
+set_property IOSTANDARD LVCMOS33 [get_ports audio]
+set_property IOSTANDARD LVCMOS33 [get_ports button]
+set_property IOSTANDARD LVCMOS33 [get_ports sys_CLK]
+set_property PACKAGE_PIN A19 [get_ports audio]
+set_property PACKAGE_PIN Y18 [get_ports sys_CLK]
+set_property PACKAGE_PIN P2 [get_ports button]
+
+set_property IOSTANDARD LVCMOS33 [get_ports sp]
+set_property PACKAGE_PIN P2 [get_ports sp]
