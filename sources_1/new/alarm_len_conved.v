@@ -25,8 +25,10 @@ always @ (posedge sec_clk) begin
                 else
                     alarming = 0;
             end
-        else
+        else begin
             alarming = 0;
+            alarm_off = 0;
+        end
 end
 
 endmodule

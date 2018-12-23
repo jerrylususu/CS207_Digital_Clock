@@ -18,7 +18,7 @@ input clk,rst,mode_btn,set_btn,toggle_btn,change_btn;
 output [7:0] seg_en, seg_out;
 input [3:0] row; output [3:0] col;
 output speaker;
-output alarm_light;
+output reg alarm_light;
 output reg clk_en, sw_en, al_en;
 output [7:0] alr_music_dbg;
 output [3:0] digit_dbg;
@@ -153,7 +153,7 @@ always @(posedge toggle_press)
 // alarm
 // only 4 alarm
 // alarm storage
-reg [1:0] alr_en;
+reg [3:0] alr_en;
 reg [1:0] alr_music [0:3];
 reg [1:0] alr_len [0:3];
 reg [16:0] alr_sec [0:3];
@@ -175,10 +175,6 @@ songplayer sp4(alarm_buz3,clk,buzzer3,alr_music[3]);
 assign alarm_spk = alarm_buz0|alarm_buz1|alarm_buz2|alarm_buz3;
 assign alr_music_dbg = {alr_music[0],alr_music[1],alr_music[2],alr_music[3]};
 
-// fuck! I have to blink! TODO!
-wire zero5sec;
-gen_freq #(50000) gen_05_sec(clk,zero5sec);
-
 output reg [1:0] alr_cur_set=0; // the alarm setting now
 reg [1:0] alr_cur_set_mode=0; // the mode of set
 
@@ -192,13 +188,7 @@ always @(posedge set_press)
         else
             alr_cur_set_mode = alr_cur_set_mode + 1;
 
-// show alarm enable
-assign alarm_light = alr_en[alr_cur_set];
 
-// set alarm enable
-always @(posedge toggle_press)
-    if(cur_mode==2&&alr_cur_set_mode==0)
-        alr_en[alr_cur_set] = ~alr_en[alr_cur_set];
 
 // cycle between alarm number
 always @(posedge change_press)
@@ -207,6 +197,19 @@ always @(posedge change_press)
             alr_cur_set = 0;
         else
             alr_cur_set = alr_cur_set + 1;
+
+// set alarm enable
+always @(posedge toggle_press)
+    if(cur_mode==2&&alr_cur_set_mode==0)
+        alr_en[alr_cur_set] = ~alr_en[alr_cur_set];
+
+// show alarm enable
+//assign alarm_light = alr_en[alr_cur_set];
+always @(posedge clk)
+    if(cur_mode==2)
+        alarm_light = alr_en[alr_cur_set];
+    else
+        alarm_light = 0;
 
 //reg [1:0] alr_music_disp;
 
