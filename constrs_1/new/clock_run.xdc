@@ -136,3 +136,6 @@ set_property PACKAGE_PIN M15 [get_ports {seconds[13]}]
 set_property PACKAGE_PIN M16 [get_ports {seconds[14]}]
 set_property PACKAGE_PIN M17 [get_ports {seconds[15]}]
 set_property PACKAGE_PIN N19 [get_ports {seconds[16]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports btn]
+set_property PACKAGE_PIN P2 [get_ports btn]

@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
 module time_goes_by(seconds,clk,reset);
+//output reg [16:0] seconds=3580;
 output reg [16:0] seconds=0;
 input clk,reset;
 always @(posedge clk) begin 
