@@ -50,12 +50,17 @@ reg [3:0] d7,d6,d5,d4,d3,d2,d1,d0;
 wire [7:0] u_seg_en, u_seg_out; // u for usual
 display disp(clk,d7,d6,d5,d4,d3,d2,d1,d0,disp_en,u_seg_en,u_seg_out);
 
+
+
+
+
 // read from keyboard
 output reg keyboard_en = 0;
+reg keyboard_mode = 1; // 0->4, 6->1
 wire [7:0] keyboard_seg_en, keyboard_seg_out;
 wire [3:0] kh1,kh2,km1,km2,ks1,ks2;
 Display_from_keyboard_inputs keyin(clk,~rst,keyboard_en,
-row,col,
+row,keyboard_mode,col,
 keyboard_seg_en,keyboard_seg_out,
 kh1,kh2,km1,km2,ks1,ks2);
 
@@ -97,16 +102,17 @@ always @ (posedge set_press) begin
 end
 
 // clock init time set
-always @ (posedge clk) begin
-    if(cur_mode==0&&clk_status==1) begin
-        keyboard_en = 1;
-        clk_init_en = 1;
-        clk_init_secs = new_time;
-    end else begin
-        keyboard_en = 0;
-        clk_init_en = 0;
-    end
-end
+//always @ (posedge clk) begin
+//    if(cur_mode==0&&clk_status==1) begin
+//        keyboard_en = 1;
+//        keyboard_mode = 1;
+//        clk_init_en = 1;
+//        clk_init_secs = new_time;
+//    end else begin
+//        keyboard_en = 0;
+//        clk_init_en = 0;
+//    end
+//end
 
 // clock hour check set
 always @(posedge change_press) begin
@@ -152,7 +158,6 @@ reg [1:0] alr_music [0:3];
 reg [1:0] alr_len [0:3];
 reg [16:0] alr_sec [0:3];
 wire buzzer0,buzzer1,buzzer2,buzzer3;
-wire buzzer=buzzer0|buzzer1|buzzer2|buzzer3;
 
 alarm_len_conved a1(alr_en[0],onehz,main_seconds,alr_sec[0],alr_len[0],toggle_press,buzzer0);
 alarm_len_conved a2(alr_en[1],onehz,main_seconds,alr_sec[1],alr_len[1],toggle_press,buzzer1);
@@ -160,8 +165,14 @@ alarm_len_conved a3(alr_en[2],onehz,main_seconds,alr_sec[2],alr_len[2],toggle_pr
 alarm_len_conved a4(alr_en[3],onehz,main_seconds,alr_sec[3],alr_len[3],toggle_press,buzzer3);
 
 wire alarm_spk;
-liangzhu sound_play(alarm_spk,clk,buzzer);
+wire alarm_buz0,alarm_buz1,alarm_buz2,alarm_buz3;
 
+songplayer sp1(alarm_buz0,clk,buzzer0,alr_music[0]);
+songplayer sp2(alarm_buz1,clk,buzzer1,alr_music[1]);
+songplayer sp3(alarm_buz2,clk,buzzer2,alr_music[2]);
+songplayer sp4(alarm_buz3,clk,buzzer3,alr_music[3]);
+
+assign alarm_spk = alarm_buz0|alarm_buz1|alarm_buz2|alarm_buz3;
 assign alr_music_dbg = {alr_music[0],alr_music[1],alr_music[2],alr_music[3]};
 
 // fuck! I have to blink! TODO!
@@ -250,15 +261,21 @@ wire [3:0] alr_time_disp1, alr_time_disp2,alr_time_disp3,alr_time_disp4;
 wire tmpq1,tmpq2;
 sec2bcd alr_time_conv(alr_sec[alr_cur_set],alr_time_disp1, alr_time_disp2,alr_time_disp3,alr_time_disp4,tmpq1,tmpq2);
 
+wire [16:0] alr_newtime;
+bcd2sec alr_conv_newtime(alr_newtime,km1,km2,ks1,ks2,4'b0,4'b0);
+
 // cycle to set alarm sec
-always @(posedge change_press)
-    if(cur_mode==2 && alr_cur_set_mode==3) begin
-        // first try to hard code
-        alr_sec[0] = 500;
-        alr_sec[1] = 3600;
-        alr_sec[2] = 3660;
-        alr_sec[3] = 7140;
-    end
+//always @(posedge change_press)
+//    if(cur_mode==2) 
+//        if(alr_cur_set_mode==3)
+//    begin
+//        keyboard_mode = 0;
+//        keyboard_en = 1;
+//        alr_sec[alr_cur_set] = alr_newtime;
+//    end
+//    else begin
+//        keyboard_en = 0;
+//    end
 
 // display what?
 always @(posedge clk) begin
@@ -298,7 +315,7 @@ always @(posedge clk) begin
     end
 end
 
-assign digit_dbg = {buzzer,alarm_spk,hour_chk_spk,speaker};
+assign digit_dbg = {alarm_buz0,hour_chk_spk,alarm_spk,speaker};
 
 // choose a display
 reg [7:0] disp_choose = 8'h00;
@@ -318,5 +335,23 @@ assign seg_out = seg_out_1 | seg_out_2;
 
 // combine the speaker
 assign speaker = hour_chk_spk | ~alarm_spk;
+
+// combine the keyboard
+always @(posedge clk) begin
+    if(cur_mode==0&&clk_status==1) begin
+        keyboard_en = 1;
+        keyboard_mode = 1;
+        clk_init_en = 1;
+        clk_init_secs = new_time;
+    end else if (cur_mode==2&&alr_cur_set_mode==3) begin
+        keyboard_en = 1;
+        keyboard_mode = 0;
+        alr_sec[alr_cur_set] = alr_newtime;
+    end else begin
+        keyboard_en = 0;
+        clk_init_en = 0;
+    end
+end
+
 
 endmodule

@@ -2,6 +2,7 @@
 module Display_from_keyboard_inputs(
     input clk, rst, en,
     input [3:0] row,
+    input mode, //  4 -> 0, 6 -> 1
     output [3:0] col,
     output reg [7:0] seg_en, seg_out,   //  display on light_seg_7
     output [3:0] H, h, M, m, S, s   //  outputs of what we get
@@ -38,12 +39,18 @@ module Display_from_keyboard_inputs(
     reg [2:0] current_digit = 0;
     always @(posedge change)
     begin
-        if (current_digit == 3'd7)
-            current_digit <= 0;
-        else
-            current_digit <= current_digit + 1;
+        if (mode)   //  6
+            if (current_digit == 3'd5)
+                current_digit <= 0;
+            else
+                current_digit <= current_digit + 1;
+        else    //  4
+            if (current_digit == 3'd3)
+                current_digit <= 0;
+            else
+                current_digit <= current_digit + 1;
     end
-
+    
     //  flash on digit: normally 0.5s period --> 2Hz ==> 1e8/2/2-1 = 25e6-1 = 24_999_999 => 2^25
     reg clk_flash = 0;
     reg [24:0] cnt_flash = 0;
@@ -72,6 +79,12 @@ module Display_from_keyboard_inputs(
             4'h7: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1000;  //  7
             4'h8: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0000;  //  8
             4'h9: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1000;  //  9
+//            4'hA: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_1000;  //  A: currently useless
+//            4'hB: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0011;  //  b: currently useless
+//            4'hC: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0111;  //  c: clear(rst)?
+//            4'hD: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0001;  //  d: currently useless
+//            4'hE: seg_out <= 8'b1000_0110;  //  E(*): cursor moves left
+//            4'hF: seg_out <= 8'b1000_1110;  //  F(#): cursor moves right
             default: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b0000_0000;    //  all light up including DP
         endcase
     
@@ -85,9 +98,9 @@ module Display_from_keyboard_inputs(
             4'd3: begin seg_en <= 8'b1111_0111; keyVal <= M1; end
             4'd4: begin seg_en <= 8'b1110_1111; keyVal <= H0; end
             4'd5: begin seg_en <= 8'b1101_1111; keyVal <= H1; end
-            //  two currently useless tubes
-            4'd6: begin seg_en <= 8'b1111_1111; end
-            4'd7: begin seg_en <= 8'b0111_1111; end
+            //  two useless tubes
+//            4'd6: begin seg_en <= 8'b1111_1111; end
+//            4'd7: begin seg_en <= 8'b0111_1111; end
         endcase
     end
     
