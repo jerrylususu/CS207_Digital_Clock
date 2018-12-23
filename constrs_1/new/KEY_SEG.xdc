@@ -54,7 +54,7 @@ set_property PACKAGE_PIN A18 [get_ports {seg_an[7]}]
 
 
 set_property PACKAGE_PIN Y18 [get_ports clk]
-set_property PACKAGE_PIN Y9 [get_ports rst]
+set_property PACKAGE_PIN R4 [get_ports rst]
 
 
 
@@ -102,6 +102,7 @@ set_property PACKAGE_PIN Y9 [get_ports rst]
 #set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 #set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
 #connect_debug_port dbg_hub/clk [get_nets clk_IBUF_BUFG]
+
 
 
 

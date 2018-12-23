@@ -3,7 +3,7 @@
 // input: 6* 4bit BCD
 // output: seconds in decimal [16:0]
 
-module sec2bcd(seconds,h1,h2,m1,m2,s1,s2);
+module bcd2sec(seconds,h1,h2,m1,m2,s1,s2);
     input [3:0] h1,h2,m1,m2,s1,s2;
     output [16:0] seconds;
     
