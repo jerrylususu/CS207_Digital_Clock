@@ -315,7 +315,7 @@ always @(posedge clk) begin
     end
 end
 
-assign digit_dbg = {alarm_buz0,hour_chk_spk,alarm_spk,speaker};
+
 
 // choose a display
 reg [7:0] disp_choose = 8'h00;
@@ -334,8 +334,8 @@ assign seg_en = seg_en_1 | seg_en_2;
 assign seg_out = seg_out_1 | seg_out_2;
 
 // combine the speaker
-assign speaker = hour_chk_spk | ~alarm_spk;
-
+assign speaker = hour_chk_spk | alarm_spk;
+assign digit_dbg = {alarm_buz0,hour_chk_spk,alarm_spk,speaker};
 // combine the keyboard
 always @(posedge clk) begin
     if(cur_mode==0&&clk_status==1) begin
