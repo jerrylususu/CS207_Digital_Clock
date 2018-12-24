@@ -33,6 +33,7 @@ module countdown(
         
         if(rst||clear) begin
             seccnt <= 0;
+            state <= 0;
         end else begin
             if(state==1)
             if(seccnt < 1_0000_0000)
@@ -58,11 +59,17 @@ module countdown(
             state <= 0;
             buzzer <= 1;
         end
+        
         if(state==0)
             buzzer <= 0;
-        else if (run==1&&pause==0)
+        if(state==1&&rst) begin
+            state <= 0;
+            buzzer <=0;
+        end    
+            
+        if (run==1&&pause==0)
             state <= 1;
-        else if (run==0&&pause==1)
+        if (run==0&&pause==1)
             state <=0;
          
     end

@@ -92,15 +92,15 @@ module Display_from_keyboard_inputs(
     always @(posedge change)
     begin
         case (current_digit)
-            4'd0: begin seg_en <= 8'b1111_1110; keyVal <= S0; end
-            4'd1: begin seg_en <= 8'b1111_1101; keyVal <= S1; end
-            4'd2: begin seg_en <= 8'b1111_1011; keyVal <= M0; end
-            4'd3: begin seg_en <= 8'b1111_0111; keyVal <= M1; end
-            4'd4: begin seg_en <= 8'b1110_1111; keyVal <= H0; end
-            4'd5: begin seg_en <= 8'b1101_1111; keyVal <= H1; end
+            3'd0: begin seg_en <= 8'b1111_1110; keyVal <= S0; end
+            3'd1: begin seg_en <= 8'b1111_1101; keyVal <= S1; end
+            3'd2: begin seg_en <= 8'b1111_1011; keyVal <= M0; end
+            3'd3: begin seg_en <= 8'b1111_0111; keyVal <= M1; end
+            3'd4: begin seg_en <= 8'b1110_1111; keyVal <= H0; end
+            3'd5: begin seg_en <= 8'b1101_1111; keyVal <= H1; end
             //  two useless tubes
-//            4'd6: begin seg_en <= 8'b1111_1111; end
-//            4'd7: begin seg_en <= 8'b0111_1111; end
+//            3'd6: begin seg_en <= 8'b1111_1111; end
+//            3'd7: begin seg_en <= 8'b0111_1111; end
         endcase
     end
     
