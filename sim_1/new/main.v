@@ -59,7 +59,8 @@ output reg keyboard_en = 0;
 reg keyboard_mode = 1; // 0->4, 6->1
 wire [7:0] keyboard_seg_en, keyboard_seg_out;
 wire [3:0] kh1,kh2,km1,km2,ks1,ks2;
-Display_from_keyboard_inputs keyin(clk,~rst,keyboard_en,
+reg kb_rst=1;
+Display_from_keyboard_inputs keyin(clk,kb_rst,keyboard_en,
 row,keyboard_mode,col,
 keyboard_seg_en,keyboard_seg_out,
 kh1,kh2,km1,km2,ks1,ks2);
@@ -385,23 +386,27 @@ assign digit_dbg = {cd_seccnt[26],cd_state,cd_run,~cd_run};
 // combine the keyboard
 always @(posedge clk) begin
     if(cur_mode==0&&clk_status==1) begin
+        kb_rst = 1;
         keyboard_en = 1;
         keyboard_mode = 1;
         clk_init_en = 1;
         clk_init_secs = new_time;
         cd_init_en = 0;
     end else if (cur_mode==2&&alr_cur_set_mode==3) begin
+        kb_rst = 1;
         keyboard_en = 1;
         keyboard_mode = 0;
         alr_sec[alr_cur_set] = alr_newtime;
         clk_init_en = 0;
         cd_init_en = 0;
     end else if (cur_mode==3&&cd_mode==1) begin
+        kb_rst = 1;
         keyboard_en = 1;
         keyboard_mode = 1;
         clk_init_en = 0;
         cd_init_en = 1;
     end else begin
+        kb_rst = 0;
         keyboard_en = 0;
         clk_init_en = 0;
         cd_init_en = 0;
