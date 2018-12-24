@@ -48,7 +48,8 @@ button_jitter bj_change(clk,change_btn,change_press);
 reg [7:0] disp_en;
 reg [3:0] d7,d6,d5,d4,d3,d2,d1,d0;
 wire [7:0] u_seg_en, u_seg_out; // u for usual
-display disp(clk,d7,d6,d5,d4,d3,d2,d1,d0,disp_en,u_seg_en,u_seg_out);
+reg [7:0] disp_en_p = 8'b01010100;
+display disp(clk,d7,d6,d5,d4,d3,d2,d1,d0,disp_en,disp_en_p,u_seg_en,u_seg_out);
 
 
 

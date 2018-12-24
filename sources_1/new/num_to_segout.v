@@ -20,30 +20,42 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module num_to_segout(num, seg_out);
+module num_to_segout(num, cdigit, en_p ,seg_out);
 input [3:0] num;
-output reg [7:0] seg_out;
+input [3:0] cdigit;
+input [7:0] en_p;
+output [7:0] seg_out;
+
+reg [6:0] seg_out1;
+reg en_point;
+
+assign seg_out = {en_point,seg_out1};
+
+always @*
+begin
+    en_point = en_p[cdigit];
+end
 
 always @*
 begin
     case(num)
-        4'h0: seg_out = 8'b11000000;
-        4'h1: seg_out = 8'b11111001;
-        4'h2: seg_out = 8'b10100100;
-        4'h3: seg_out = 8'b10110000;
-        4'h4: seg_out = 8'b10011001;
-        4'h5: seg_out = 8'b10010010;
-        4'h6: seg_out = 8'b10000010;
-        4'h7: seg_out = 8'b11111000;
-        4'h8: seg_out = 8'b10000000;
-        4'h9: seg_out = 8'b10010000;
-        4'ha: seg_out = 8'b10001000;
-        4'hb: seg_out = 8'b10000011;
-        4'hc: seg_out = 8'b11000110;
-        4'hd: seg_out = 8'b10100001;
-        4'he: seg_out = 8'b10000110;
-        4'hf: seg_out = 8'b10001110;
-        default: seg_out = 8'b00000000;
+        4'h0: seg_out1 = 7'b1000000;
+        4'h1: seg_out1 = 7'b1111001;
+        4'h2: seg_out1 = 7'b0100100;
+        4'h3: seg_out1 = 7'b0110000;
+        4'h4: seg_out1 = 7'b0011001;
+        4'h5: seg_out1 = 7'b0010010;
+        4'h6: seg_out1 = 7'b0000010;
+        4'h7: seg_out1 = 7'b1111000;
+        4'h8: seg_out1 = 7'b0000000;
+        4'h9: seg_out1 = 7'b0010000;
+        4'ha: seg_out1 = 7'b0001000;
+        4'hb: seg_out1 = 7'b0000011;
+        4'hc: seg_out1 = 7'b1000110;
+        4'hd: seg_out1 = 7'b0100001;
+        4'he: seg_out1 = 7'b0000110;
+        4'hf: seg_out1 = 7'b0001110;
+        default: seg_out1 = 7'b0000000;
     endcase
 end
 

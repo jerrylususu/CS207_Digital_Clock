@@ -1,9 +1,10 @@
 `timescale 1ns / 1ps
 
-module display(clk,d7,d6,d5,d4,d3,d2,d1,d0,en,seg_en,seg_out);
+module display(clk,d7,d6,d5,d4,d3,d2,d1,d0,en,en_point,seg_en,seg_out);
 input clk;
 input [3:0] d0,d1,d2,d3,d4,d5,d6,d7;
 input [7:0] en;
+input [7:0] en_point;
 
 output reg [7:0] seg_en;
 output [7:0] seg_out;
@@ -31,7 +32,7 @@ begin
 end
 
 reg [3:0] current_num=0;
-num_to_segout u(current_num,seg_out);
+num_to_segout u(current_num,current_digit,en_point,seg_out);
 
 always @(posedge change)
 begin
