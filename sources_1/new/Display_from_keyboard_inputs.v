@@ -69,23 +69,23 @@ module Display_from_keyboard_inputs(
     reg [3:0] keyVal = 4'd0;
     always @(change)
         case (keyVal)
-            4'h0: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1100_0000;  //  0
-            4'h1: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1001;  //  1
-            4'h2: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0100;  //  2
-            4'h3: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1011_0000;  //  3
-            4'h4: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1001;  //  4
-            4'h5: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_0010;  //  5
-            4'h6: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0010;  //  6
-            4'h7: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1000;  //  7
-            4'h8: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0000;  //  8
-            4'h9: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1000;  //  9
+            4'h0: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1100_0000;  //  0
+            4'h1: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1001;  //  1
+            4'h2: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0100;  //  2
+            4'h3: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1011_0000;  //  3
+            4'h4: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1001;  //  4
+            4'h5: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_0010;  //  5
+            4'h6: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0010;  //  6
+            4'h7: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1000;  //  7
+            4'h8: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0000;  //  8
+            4'h9: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1000;  //  9
 //            4'hA: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_1000;  //  A: currently useless
 //            4'hB: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0011;  //  b: currently useless
 //            4'hC: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0111;  //  c: clear(rst)?
 //            4'hD: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0001;  //  d: currently useless
 //            4'hE: seg_out <= 8'b1000_0110;  //  E(*): cursor moves left
 //            4'hF: seg_out <= 8'b1000_1110;  //  F(#): cursor moves right
-            default: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b0000_0000;    //  all light up including DP
+            default: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b0000_0000;    //  all light up including DP
         endcase
     
     //  identify val now    

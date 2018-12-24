@@ -211,3 +211,6 @@ set_property PACKAGE_PIN M15 [get_ports {digit_dbg[3]}]
 
 set_property IOSTANDARD LVCMOS33 [get_ports alarm_light]
 set_property PACKAGE_PIN N19 [get_ports alarm_light]
+
+set_property PACKAGE_PIN K13 [get_ports cd_en]
+set_property IOSTANDARD LVCMOS33 [get_ports cd_en]

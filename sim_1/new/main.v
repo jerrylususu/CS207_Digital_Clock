@@ -8,7 +8,7 @@ row,col,
 seg_en,seg_out,
 speaker,
 alarm_light,
-clk_en,sw_en, al_en,
+clk_en,sw_en, al_en, cd_en,
 keyboard_en,
 alr_cur_set,
 alr_music_dbg,
@@ -19,7 +19,7 @@ output [7:0] seg_en, seg_out;
 input [3:0] row; output [3:0] col;
 output speaker;
 output reg alarm_light;
-output reg clk_en, sw_en, al_en;
+output reg clk_en, sw_en, al_en, cd_en;
 output [7:0] alr_music_dbg;
 output [3:0] digit_dbg;
 reg [1:0] cur_mode = 0;
@@ -66,16 +66,17 @@ kh1,kh2,km1,km2,ks1,ks2);
 
 // main state machine
 always @ (posedge mode_press) begin
-    if(cur_mode == 2)
+    if(cur_mode == 3)
         cur_mode = 0;
     else cur_mode = cur_mode + 1;
 end
 
 always @ (posedge clk) begin
     case (cur_mode)
-        0: begin clk_en=1; sw_en=0; al_en=0; end
-        1: begin clk_en=0; sw_en=1; al_en=0; end
-        2: begin clk_en=0; sw_en=0; al_en=1; end
+        0: begin clk_en=1; sw_en=0; al_en=0; cd_en=0; end
+        1: begin clk_en=0; sw_en=1; al_en=0; cd_en=0; end
+        2: begin clk_en=0; sw_en=0; al_en=1; cd_en=0; end
+        3: begin clk_en=0; sw_en=0; al_en=0; cd_en=1; end
     endcase
 end
 
@@ -280,6 +281,43 @@ bcd2sec alr_conv_newtime(alr_newtime,km1,km2,ks1,ks2,4'b0,4'b0);
 //        keyboard_en = 0;
 //    end
 
+// countdown
+wire cd_toggle = toggle_press & (cur_mode==3);
+wire cd_clear = change_press & (cur_mode==3);
+wire [16:0] cd_seconds;
+wire cd_buzzer;
+
+wire [16:0] cd_init_sec;
+reg cd_init_en=0;
+
+reg cd_mode=0; // countdown mode, 0->view, 1->settting
+
+bcd2sec cd_set_conv(cd_init_sec,kh1,kh2,km1,km2,ks1,ks2);
+
+always @(posedge set_press)
+    if(cur_mode ==3)
+        cd_mode = ~cd_mode;
+                
+wire [3:0] cd1,cd2,cd3,cd4,cd5,cd6;
+sec2bcd cd_disp_conv(cd_seconds,cd1,cd2,cd3,cd4,cd5,cd6);
+
+wire cd_buz_freq;
+gen_freq #(65536) cd_buz_gen(clk, cd_buz_freq);
+
+wire cd_buz_out;
+assign cd_buz_out = cd_buz_freq & cd_buzzer;
+
+reg cd_run=0;
+
+always @(posedge toggle_press)
+    if(cur_mode==3) begin
+        cd_run = ~cd_run;
+    end
+
+wire cd_state;
+wire [27:0] cd_seccnt;
+
+countdown cd(clk,rst,onehz,cd_toggle,cd_clear,cd_init_en,cd_run,~cd_run,cd_init_sec,cd_seconds,cd_buzzer,cd_state,cd_seccnt);
 // display what?
 always @(posedge clk) begin
     if(cur_mode==0) begin
@@ -315,6 +353,9 @@ always @(posedge clk) begin
                 3: disp_en=8'b11110000;
             endcase
         end
+    end else if (cur_mode==3) begin
+        {d7,d6,d5,d4,d3,d2,d1,d0} = {4'b0,4'b0,cd1,cd2,cd3,cd4,cd5,cd6};
+        disp_en = 8'b00111111;
     end
 end
 
@@ -337,8 +378,10 @@ assign seg_en = seg_en_1 | seg_en_2;
 assign seg_out = seg_out_1 | seg_out_2;
 
 // combine the speaker
-assign speaker = hour_chk_spk | alarm_spk;
-assign digit_dbg = {alarm_buz0,hour_chk_spk,alarm_spk,speaker};
+assign speaker = hour_chk_spk | alarm_spk | cd_buz_out;
+assign digit_dbg = {cd_seccnt[26],cd_state,cd_run,~cd_run};
+
+
 // combine the keyboard
 always @(posedge clk) begin
     if(cur_mode==0&&clk_status==1) begin
@@ -346,13 +389,22 @@ always @(posedge clk) begin
         keyboard_mode = 1;
         clk_init_en = 1;
         clk_init_secs = new_time;
+        cd_init_en = 0;
     end else if (cur_mode==2&&alr_cur_set_mode==3) begin
         keyboard_en = 1;
         keyboard_mode = 0;
         alr_sec[alr_cur_set] = alr_newtime;
+        clk_init_en = 0;
+        cd_init_en = 0;
+    end else if (cur_mode==3&&cd_mode==1) begin
+        keyboard_en = 1;
+        keyboard_mode = 1;
+        clk_init_en = 0;
+        cd_init_en = 1;
     end else begin
         keyboard_en = 0;
         clk_init_en = 0;
+        cd_init_en = 0;
     end
 end
 
