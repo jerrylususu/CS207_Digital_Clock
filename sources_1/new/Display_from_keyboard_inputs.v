@@ -12,7 +12,7 @@ module Display_from_keyboard_inputs(
     wire [2:0] cursor;  //  to define which digit is being modified (DP lights up)
     wire [3:0] H1, H0, M1, M0, S1, S0;
     Keyboard_input_6x4
-        ki64(clk, rst, en,
+        ki64(clk, rst, en, mode,
             row, col,
                 H1, H0, M1, M0, S1, S0,
                     cursor);
@@ -39,16 +39,16 @@ module Display_from_keyboard_inputs(
     reg [2:0] current_digit = 0;
     always @(posedge change)
     begin
-        if (mode)   //  6
-            if (current_digit == 3'd5)
+//        if (mode)   //  6
+            if (current_digit == 3'd7)
                 current_digit <= 0;
             else
                 current_digit <= current_digit + 1;
-        else    //  4
-            if (current_digit == 3'd3)
-                current_digit <= 0;
-            else
-                current_digit <= current_digit + 1;
+//        else    //  4
+//            if (current_digit == 3'd3)
+//                current_digit <= 0;
+//            else
+//                current_digit <= current_digit + 1;
     end
     
     //  flash on digit: normally 0.5s period --> 2Hz ==> 1e8/2/2-1 = 25e6-1 = 24_999_999 => 2^25
@@ -69,23 +69,23 @@ module Display_from_keyboard_inputs(
     reg [3:0] keyVal = 4'd0;
     always @(change)
         case (keyVal)
-            4'h0: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1100_0000;  //  0
-            4'h1: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1001;  //  1
-            4'h2: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0100;  //  2
-            4'h3: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1011_0000;  //  3
-            4'h4: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1001;  //  4
-            4'h5: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_0010;  //  5
-            4'h6: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0010;  //  6
-            4'h7: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1000;  //  7
-            4'h8: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0000;  //  8
-            4'h9: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1000;  //  9
+            4'h0: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1100_0000;  //  0
+            4'h1: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1001;  //  1
+            4'h2: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0100;  //  2
+            4'h3: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1011_0000;  //  3
+            4'h4: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1001;  //  4
+            4'h5: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_0010;  //  5
+            4'h6: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0010;  //  6
+            4'h7: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1111_1000;  //  7
+            4'h8: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0000;  //  8
+            4'h9: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1001_1000;  //  9
 //            4'hA: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_1000;  //  A: currently useless
 //            4'hB: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1000_0011;  //  b: currently useless
 //            4'hC: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0111;  //  c: clear(rst)?
 //            4'hD: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b1010_0001;  //  d: currently useless
 //            4'hE: seg_out <= 8'b1000_0110;  //  E(*): cursor moves left
 //            4'hF: seg_out <= 8'b1000_1110;  //  F(#): cursor moves right
-            default: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == (mode ? 7 : 5)) && (~clk_flash)) ? 8'b1111_1111 : 8'b0000_0000;    //  all light up including DP
+            default: seg_out <= (en && (current_digit - 1 == cursor || current_digit + 1 == 8) && (~clk_flash)) ? 8'b1111_1111 : 8'b0000_0000;    //  all light up including DP
         endcase
     
     //  identify val now    
@@ -96,11 +96,11 @@ module Display_from_keyboard_inputs(
             3'd1: begin seg_en <= 8'b1111_1101; keyVal <= S1; end
             3'd2: begin seg_en <= 8'b1111_1011; keyVal <= M0; end
             3'd3: begin seg_en <= 8'b1111_0111; keyVal <= M1; end
-            3'd4: begin seg_en <= 8'b1110_1111; keyVal <= H0; end
-            3'd5: begin seg_en <= 8'b1101_1111; keyVal <= H1; end
+            3'd4: begin seg_en <= mode ? 8'b1110_1111 : 8'b1111_1111; keyVal <= H0; end
+            3'd5: begin seg_en <= mode ? 8'b1101_1111 : 8'b1111_1111; keyVal <= H1; end
             //  two useless tubes
-//            3'd6: begin seg_en <= 8'b1111_1111; end
-//            3'd7: begin seg_en <= 8'b0111_1111; end
+            3'd6: begin seg_en <= 8'b1111_1111; end
+            3'd7: begin seg_en <= 8'b1111_1111; end
         endcase
     end
     

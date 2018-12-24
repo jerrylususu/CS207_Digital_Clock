@@ -2,6 +2,7 @@
 module Keyboard_input_6x4(
     input clk, rst, //  rst is a control input for the whole system
     input en,   //  enable signal --> 1 active
+    input mode,
     input [3:0] row,    //  keyboard rows input
     output [3:0] col,   //  keyboard columns output
     output [3:0] H1, H0, M1, M0, S1, S0, //  Hours, Minutes, Seconds -> 14:20:59
@@ -44,6 +45,7 @@ module Keyboard_input_6x4(
         if (~reset)
         begin
             keyVal <= 4'd0;
+            cursor <= 0;
         end
         else
             if (key_pressed_flag && activate && en)
@@ -70,42 +72,110 @@ module Keyboard_input_6x4(
                     //  row 3
                     8'b1110_0111:   //  *: cursor moves left
                     begin
-                        if (cursor == 3'd5)
-                        begin
-                            cursor = 3'd0;
-                            keyVal = Memory[0];
-                        end
-                        else
-                        begin
-                            case (cursor)
-                            3'd0:   keyVal = Memory[1];
-                            3'd1:   keyVal = Memory[2];
-                            3'd2:   keyVal = Memory[3];
-                            3'd3:   keyVal = Memory[4];
-                            3'd4:   keyVal = Memory[5];
-                            endcase
-                            cursor = cursor + 1;
-                        end
+//                        if (cursor == 3'd5)
+//                        begin
+//                            cursor = 3'd0;
+//                            keyVal = Memory[0];
+//                        end
+//                        else
+//                        begin
+//                            case (cursor)
+//                            3'd0:   keyVal = Memory[1];
+//                            3'd1:   keyVal = Memory[2];
+//                            3'd2:   keyVal = Memory[3];
+//                            3'd3:   keyVal = Memory[4];
+//                            3'd4:   keyVal = Memory[5];
+//                            endcase
+//                            cursor = cursor + 1;
+//                        end
+                            if (mode)   //  6
+                                if (cursor == 3'd5)
+                                begin
+                                    cursor = 3'd0;
+                                    keyVal = Memory[0];
+                                end
+                                else
+                                begin
+                                    case (cursor)
+                                    3'd0:   keyVal = Memory[1];
+                                    3'd1:   keyVal = Memory[2];
+                                    3'd2:   keyVal = Memory[3];
+                                    3'd3:   keyVal = Memory[4];
+                                    3'd4:   keyVal = Memory[5];
+                                    endcase
+                                    cursor = cursor + 1;
+                                end
+                            else    //  4
+                                if (cursor == 3'd3)
+                                begin
+                                    cursor = 3'd0;
+                                    keyVal = Memory[0];
+                                end
+                                else
+                                begin
+                                    case (cursor)
+                                    3'd0:   keyVal = Memory[1];
+                                    3'd1:   keyVal = Memory[2];
+                                    3'd2:   keyVal = Memory[3];
+//                                    3'd3:   keyVal = Memory[4];
+//                                    3'd4:   keyVal = Memory[5];
+                                    endcase
+                                    cursor = cursor + 1;
+                                end
                     end
                     8'b1101_0111: keyVal <= 3'd0;
                     8'b1011_0111:   //  #: cursor moves right
                     begin
-                        if (cursor == 3'd0)
-                        begin
-                            cursor = 3'd5;
-                            keyVal = Memory[5];
-                        end
-                        else
-                        begin
-                            case (cursor)
-                            3'd1:   keyVal = Memory[0];
-                            3'd2:   keyVal = Memory[1];
-                            3'd3:   keyVal = Memory[2];
-                            3'd4:   keyVal = Memory[3];
-                            3'd5:   keyVal = Memory[4];
-                            endcase
-                            cursor = cursor - 1;
-                        end
+//                        if (cursor == 3'd0)
+//                        begin
+//                            cursor = 3'd5;
+//                            keyVal = Memory[5];
+//                        end
+//                        else
+//                        begin
+//                            case (cursor)
+//                            3'd1:   keyVal = Memory[0];
+//                            3'd2:   keyVal = Memory[1];
+//                            3'd3:   keyVal = Memory[2];
+//                            3'd4:   keyVal = Memory[3];
+//                            3'd5:   keyVal = Memory[4];
+//                            endcase
+//                            cursor = cursor - 1;
+//                        end
+                        if (mode)   //  6
+                            if (cursor == 3'd0)
+                            begin
+                                cursor = 3'd5;
+                                keyVal = Memory[5];
+                            end
+                            else
+                            begin
+                                case (cursor)
+                                3'd1:   keyVal = Memory[0];
+                                3'd2:   keyVal = Memory[1];
+                                3'd3:   keyVal = Memory[2];
+                                3'd4:   keyVal = Memory[3];
+                                3'd5:   keyVal = Memory[4];
+                                endcase
+                                cursor = cursor - 1;
+                            end
+                        else    //  4
+                            if (cursor == 3'd0)
+                            begin
+                                cursor = 3'd3;
+                                keyVal = Memory[3];
+                            end
+                            else
+                            begin
+                                case (cursor)
+                                3'd1:   keyVal = Memory[0];
+                                3'd2:   keyVal = Memory[1];
+                                3'd3:   keyVal = Memory[2];
+//                                3'd4:   keyVal = Memory[3];
+//                                3'd5:   keyVal = Memory[4];
+                                endcase
+                                cursor = cursor - 1;
+                            end
                     end
                     8'b0111_0111: keyVal <= 4'h9;   //  D: invalid   
                     endcase
