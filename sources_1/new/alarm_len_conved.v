@@ -16,7 +16,7 @@ always @ (posedge sec_clk) begin
         3: len = 60;
     endcase
     if(enable)
-        if( tar_sec <= cur_sec && cur_sec <= tar_sec + len)
+        if( tar_sec-1 <= cur_sec && cur_sec <= tar_sec + len -1)
             begin
                 if(alarm_off==0 && off==1)
                     alarm_off = 1;
