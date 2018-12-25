@@ -99,6 +99,7 @@ hour_check hour_chk(clk,hour_check_en,main_seconds,hour_chk_spk,hc_sec);
 
 // clock setting state machine
 always @ (posedge set_press) begin
+    if(cur_mode==0)
     if(clk_status==2)
         clk_status<=0;
     else
@@ -388,7 +389,7 @@ assign seg_out = seg_out_1 | seg_out_2;
 assign speaker = hour_chk_spk | alarm_spk | cd_buz_out;
 
 // debug light config
-assign digit_dbg = {hour_chk_spk,hc_sec[11],hc_sec[10],hc_sec[9]};
+assign digit_dbg = {keyboard_en,clk_status[1],clk_status[0],cd_mode};
 
 
 // combine the keyboard
