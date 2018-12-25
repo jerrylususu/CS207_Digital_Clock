@@ -94,7 +94,8 @@ sec2bcd clock_conv(main_seconds,ch1,ch2,cm1,cm2,cs1,cs2);
 wire [16:0] new_time;
 bcd2sec clock_set_conv(new_time,kh1,kh2,km1,km2,ks1,ks2);
 wire hour_chk_spk;
-hour_check hour_chk(clk,hour_check_en,main_seconds,hour_chk_spk);
+wire [11:0] hc_sec;
+hour_check hour_chk(clk,hour_check_en,main_seconds,hour_chk_spk,hc_sec);
 
 // clock setting state machine
 always @ (posedge set_press) begin
@@ -385,7 +386,9 @@ assign seg_out = seg_out_1 | seg_out_2;
 
 // combine the speaker
 assign speaker = hour_chk_spk | alarm_spk | cd_buz_out;
-assign digit_dbg = {u_seg_out[7],u_seg_out[6],u_seg_out[5],u_seg_out[4]};
+
+// debug light config
+assign digit_dbg = {hour_chk_spk,hc_sec[11],hc_sec[10],hc_sec[9]};
 
 
 // combine the keyboard
