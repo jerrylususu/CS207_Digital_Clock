@@ -9,7 +9,7 @@ input [7:0] en_point;
 output reg [7:0] seg_en;
 output [7:0] seg_out;
 
-reg [20:0] count=0;
+reg [30:0] count=0;
 reg change=0;
 always @(posedge clk)
 begin

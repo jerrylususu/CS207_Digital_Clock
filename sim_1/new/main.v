@@ -320,7 +320,9 @@ wire cd_state;
 wire [27:0] cd_seccnt;
 
 countdown cd(clk,rst,onehz,cd_toggle,cd_clear,cd_init_en,cd_run,~cd_run,cd_init_sec,cd_seconds,cd_buzzer,cd_state,cd_seccnt);
-// display what?
+
+
+// display content
 always @(posedge clk) begin
     if(cur_mode==0) begin
         // clock 
@@ -342,12 +344,13 @@ always @(posedge clk) begin
         {d7,d6,d5,d4,d3,d2,d1,d0} = {swd7,swd6,swd5,swd4,swd3,swd2,swd1,swd0};
         disp_en = 8'hff;
     end else if(cur_mode==2) begin
-        // alarm setting
+        // alarm
         {d7,d6,d5,d4,d3,d2,d1,d0} = {alr_cur_num_disp,alr_music_num_disp,alr_len_disp_full1,alr_len_disp_full2,
                     alr_time_disp1, alr_time_disp2,alr_time_disp3,alr_time_disp4};
         if(!onehz) begin
             disp_en=8'b11111111;
         end else begin
+            // blink alarm setting
             case (alr_cur_set_mode)
                 0: disp_en=8'b01111111;
                 1: disp_en=8'b10111111;
@@ -356,6 +359,7 @@ always @(posedge clk) begin
             endcase
         end
     end else if (cur_mode==3) begin
+        // countdown
         {d7,d6,d5,d4,d3,d2,d1,d0} = {4'b0,4'b0,cd1,cd2,cd3,cd4,cd5,cd6};
         disp_en = 8'b00111111;
     end
@@ -381,7 +385,7 @@ assign seg_out = seg_out_1 | seg_out_2;
 
 // combine the speaker
 assign speaker = hour_chk_spk | alarm_spk | cd_buz_out;
-assign digit_dbg = {cd_seccnt[26],cd_state,cd_run,~cd_run};
+assign digit_dbg = {u_seg_out[7],u_seg_out[6],u_seg_out[5],u_seg_out[4]};
 
 
 // combine the keyboard
