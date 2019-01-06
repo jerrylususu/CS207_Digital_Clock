@@ -4,11 +4,11 @@ Our implementation of the CS207 task 1 and task 2 @ Fall 2018.
 
 ## Contributor
 
-11712709 卢之睿: Main framework design, Clock, Countdown, Display, Alarm
+Nekonull: Main framework design, Clock, Countdown, Display, Alarm
 
-11710116 沈静然: Keyboard input and display, Countdown, Button jitter
+JR Shen: Keyboard input and display, Countdown, Button jitter
 
-11712510 李浩南: Music, Paddling
+Tert-butyllithium: Music, Paddling
 
 ## Task
 
