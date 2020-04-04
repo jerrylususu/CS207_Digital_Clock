@@ -89,5 +89,5 @@ This project took 32h with 3 people working in total approximately. It's quite a
 
 ### Using Keyboard as Input
 
-![keyboard setting](assets/keyboard setting.jpg)
+![keyboard setting](assets/keyboard%20setting.jpg)
 
